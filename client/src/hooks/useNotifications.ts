@@ -13,7 +13,8 @@ export const useNotifications = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const es = new EventSource(`/api/notifications/events?token=${token}`);
+    const base = import.meta.env.VITE_API_URL || '';
+    const es = new EventSource(`${base}/api/notifications/events?token=${token}`);
 
     es.onmessage = (e) => {
       try {
