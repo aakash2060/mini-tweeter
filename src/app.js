@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./config/db");
+require("./config/neo4j");
 
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +15,7 @@ app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/topics", require("./routes/topic"));
 app.use("/api/genres", require("./routes/genre"));
 app.use("/api/stats", require("./routes/stats"));
+app.use("/api/graph", require("./routes/graph"));
 app.use("/api/notifications", require("./routes/notifications"));
 
 /* observers */
