@@ -1,44 +1,24 @@
 require("dotenv").config();
-require("./config/db"); // DB singleton
+require("./config/db");
 
 const express = require("express");
-const session = require("express-session");
-const path = require("path");
+const cors = require("cors");
+
 const app = express();
 
-/* ---------- view engine ---------- */
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
+app.use(express.json());
 
-/* ---------- middleware ----------- */
-app.use(express.urlencoded({ extended: true }));
-app.use(
-  session({
-    secret: "super-secret-session-string",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/dashboard", require("./routes/dashboard"));
+app.use("/api/topics", require("./routes/topic"));
+app.use("/api/genres", require("./routes/genre"));
+app.use("/api/stats", require("./routes/stats"));
+app.use("/api/notifications", require("./routes/notifications"));
 
-/* ---------- core routes ---------- */
-app.get(
-  "/dashboard",
-  require("./controllers/dashboardController").getDashboard
-);
-app.get("/", (_req, res) => res.redirect("/signup"));
-
-app.use("/", require("./routes/auth"));
-app.use("/", require("./routes/genre"));
-app.use("/", require("./routes/topic"));
-app.use("/", require("./routes/message"));
-
-/* ---------- SSE notifications ---- ★ */
-app.use("/notifications", require("./routes/notifications"));
-
-/* ---------- observers ------------ */
+/* observers */
 require("./observers/notifySubscribers");
 require("./observers/topicStats");
 
-/* ---------- server --------------- */
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`  Listening on ${PORT}`));
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
