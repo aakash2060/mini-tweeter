@@ -34,7 +34,8 @@ const createTopic = (topicId) =>
 
 const subscribeUserToTopic = (userId, topicId) =>
   run(
-    `MATCH (u:User {id: $userId}), (t:Topic {id: $topicId})
+    `MERGE (u:User {id: $userId})
+     MERGE (t:Topic {id: $topicId})
      MERGE (u)-[:SUBSCRIBED_TO]->(t)`,
     { userId: userId.toString(), topicId: topicId.toString() }
   );
