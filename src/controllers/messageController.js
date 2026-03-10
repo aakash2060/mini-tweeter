@@ -1,6 +1,7 @@
 const Message = require("../models/message");
 const Subscription = require("../models/subscription");
 const eventBus = require("../eventbus");
+const graph = require("../models/graphModel");
 
 exports.getMessagesByTopic = async (req, res) => {
   try {
@@ -34,6 +35,7 @@ exports.createMessage = async (req, res) => {
     const message = await Message.create({ body: req.body.body, topicId, authorId: req.userId });
     await message.populate("authorId", "username");
     eventBus.emit("newMessage", message);
+    graph.recordPost(req.userId, topicId, message._id); // fire-and-forget
     res.status(201).json(message);
   } catch (err) {
     res.status(500).json({ error: err.message });

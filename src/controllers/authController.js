@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const UserPreference = require("../models/userpreference");
+const graph = require("../models/graphModel");
 
 const signToken = (userId) =>
   jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -11,6 +12,7 @@ exports.register = async (req, res) => {
     const user = await User.create({ username, email, password });
     await UserPreference.create({ userId: user._id, genres: [], firstLogin: true });
     const token = signToken(user._id);
+    graph.createUser(user._id); // fire-and-forget
     res.status(201).json({ token, userId: user._id, username: user.username });
   } catch (e) {
     res.status(400).json({ error: e.message });

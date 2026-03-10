@@ -2,6 +2,7 @@ const Topic = require("../models/topic");
 const Message = require("../models/message");
 const Subscription = require("../models/subscription");
 const eventBus = require("../eventbus");
+const graph = require("../models/graphModel");
 
 exports.getAllTopics = async (req, res) => {
   try {
@@ -19,6 +20,8 @@ exports.createTopic = async (req, res) => {
     const { title, description, genre } = req.body;
     const topic = await Topic.create({ title, description, genre, creatorId: req.userId });
     await Subscription.create({ userId: req.userId, topicId: topic._id });
+    graph.createTopic(topic._id); // fire-and-forget
+    graph.subscribeUserToTopic(req.userId, topic._id);
     res.status(201).json(topic);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -48,6 +51,7 @@ exports.subscribe = async (req, res) => {
     const existing = await Subscription.findOne({ userId: req.userId, topicId: req.params.id });
     if (!existing) {
       await Subscription.create({ userId: req.userId, topicId: req.params.id });
+      graph.subscribeUserToTopic(req.userId, req.params.id); // fire-and-forget
     }
     res.json({ subscribed: true });
   } catch (err) {
@@ -58,6 +62,7 @@ exports.subscribe = async (req, res) => {
 exports.unsubscribe = async (req, res) => {
   try {
     await Subscription.findOneAndDelete({ userId: req.userId, topicId: req.params.id });
+    graph.unsubscribeUserFromTopic(req.userId, req.params.id); // fire-and-forget
     res.json({ subscribed: false });
   } catch (err) {
     res.status(500).json({ error: err.message });
