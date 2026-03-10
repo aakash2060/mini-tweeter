@@ -77,8 +77,8 @@ export const TopicsPage = () => {
             <h4><Link to={`/topics/${topic._id}`}>{topic.title}</Link></h4>
             <p className="muted">{topic.description}</p>
             <div className="topic-stats">
-              <span>👁 {topic.viewCount}</span>
-              <span>💬 {topic.replyCount}</span>
+              <span>{topic.viewCount} views</span>
+              <span>{topic.replyCount} replies</span>
             </div>
             <button
               className={topic.isSubscribed ? 'btn-secondary' : 'btn-primary'}

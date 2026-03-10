@@ -82,8 +82,8 @@ export const TopicDetailPage = () => {
         </div>
         <p>{topic.description}</p>
         <div className="topic-stats">
-          <span>👁 {topic.viewCount} views</span>
-          <span>💬 {topic.replyCount} replies</span>
+          <span>{topic.viewCount} views</span>
+          <span>{topic.replyCount} replies</span>
         </div>
       </div>
 
