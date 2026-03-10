@@ -69,7 +69,7 @@ const recommendTopics = async (userId) => {
   const records = await query(
     `MATCH (me:User {id: $userId})-[:SUBSCRIBED_TO]->(shared:Topic)<-[:SUBSCRIBED_TO]-(similar:User)
      WHERE similar <> me
-     WITH similar, count(shared) AS overlap
+     WITH me, similar, count(shared) AS overlap
      WHERE overlap >= 1
      MATCH (similar)-[:SUBSCRIBED_TO]->(rec:Topic)
      WHERE NOT (me)-[:SUBSCRIBED_TO]->(rec)

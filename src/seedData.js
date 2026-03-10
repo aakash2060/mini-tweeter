@@ -37,113 +37,121 @@ const SAMPLE_DESCRIPTIONS = {
   Education: "A look at educational systems, online learning, and the future of education.",
 };
 
-// Realistic, genre-specific message pools — 10 per genre
+// Conversational message pools — written as back-and-forth between genre subscribers
+// Technology: admin(1,4,7,10) alice(2,5,8) bob(3,6,9)
+// Sports: alice(1,3,5,7,9) carol(2,4,6,8,10)
+// Entertainment: bob(1,3,5,7,9) admin(2,4,6,8,10)
+// Science: admin(1,3,5,7,9) carol(2,4,6,8,10)
+// Politics: bob(1,3,5,7,9) dave(2,4,6,8,10)
+// Health: alice(1,4,7,10) carol(2,5,8) dave(3,6,9)
+// Business: admin(1,4,7,10) bob(2,5,8) dave(3,6,9)
+// Education: carol(1,3,5,7,9) dave(2,4,6,8,10)
 const GENRE_MESSAGES = {
   Technology: [
-    "This is exactly why I switched to TypeScript last year. No going back.",
-    "The benchmarks are impressive but I want to see this at production scale before I buy in.",
-    "Hot take: most devs don't need half the complexity they introduce themselves.",
-    "Been following this space for a while — the pace of change is genuinely hard to keep up with.",
-    "Anyone tried integrating this with a monorepo setup? Curious how it holds up under pressure.",
-    "Documentation is rough but the core concept is solid. Give it six months.",
-    "I built something similar two years ago and wish this existed back then. Would have saved weeks.",
-    "Interesting but the vendor lock-in risk is very real. Proceed with caution.",
-    "The community around this is what makes it worth adopting. Ecosystem matters.",
-    "This will be the industry default in five years. Calling it now.",
+    "AI is moving faster than any of us predicted. What felt like 5 years away is shipping today.",
+    "True, but a lot of it is still impressive demos rather than reliable production systems.",
+    "I've seen real gains in dev workflows though. Not theoretical — actual hours saved every week.",
+    "The copilot stuff especially. I'm not writing boilerplate by hand anymore and I don't miss it.",
+    "My issue is the confidence. It writes wrong code the same way it writes right code. No signal.",
+    "Hence TypeScript. Pairing strong types with AI output catches most of the nonsense early.",
+    "The deeper concern is junior devs. How do you build intuition if you skip the struggle entirely?",
+    "Tooling that hides complexity might be creating a knowledge gap nobody sees until it's too late.",
+    "Or it shifts what matters. Understanding systems might just matter more than syntax recall now.",
+    "Either way the job has changed. Faster than any shift I've seen in the last decade.",
   ],
   Sports: [
-    "That last quarter was something else. I couldn't look away for a second.",
-    "Stats don't lie — this guy is playing at a completely different level right now.",
-    "Honestly thought they'd blow it in the final minutes. Proved me wrong for once.",
-    "The coaching decision in the second half was questionable at best. Cost them momentum.",
-    "Dynasty incoming. You heard it here first. This team is built different.",
-    "As a fan for 15 years, this season has been the most unpredictable I can remember.",
-    "Trade rumors are flying already. Front office needs to move fast before the window closes.",
-    "Injuries are destroying their depth. Can't keep this up if two more go down.",
-    "Best matchup I've watched all season. Genuinely entertaining from tip-off.",
-    "Controversial call but honestly it didn't change the result. Better team won.",
+    "That performance last night was something else. Did not expect them to dominate like that.",
+    "The defensive setup was completely different from last season. New coordinator is making a difference.",
+    "The stats back it up too. Top three in almost every meaningful category right now.",
+    "What worries me is sustainability. Can they keep this up when the schedule gets brutal?",
+    "Depth is the answer. Last year they had eight reliable guys. This squad goes fifteen deep.",
+    "I'll believe it in a playoff environment. Regular season form means nothing if you fold then.",
+    "Harsh but fair. It's a completely different sport in elimination games.",
+    "Their best player has never been past the second round though. That has to change.",
+    "He looked locked in last night. Different body language. Something has clicked.",
+    "Cautiously optimistic. Which for me is basically screaming from the rooftops.",
   ],
   Entertainment: [
-    "Third episode dragged but the finale absolutely made up for it. Stick with it.",
-    "The soundtrack alone is worth the watch. Production quality is on another level.",
-    "Did not expect to cry during a film like this. And yet, here we are.",
-    "Overhyped in my opinion. The original handled the material with so much more care.",
-    "Casting choices were inspired across the board. Every single performance landed.",
-    "Watched it twice already and caught so many details I missed the first time.",
-    "Slow first half but elite second half. Definitely worth sticking through.",
-    "The director really committed to the visual style this time around. Refreshing.",
-    "My whole friend group got obsessed with this over the weekend. We can't stop talking about it.",
-    "Divisive ending but I actually loved what they were going for. Respects the audience.",
+    "Finally finished the series everyone's been talking about. Three episodes to hook me then couldn't stop.",
+    "The slow burn is intentional. The payoff in episodes six and seven makes every minute worth it.",
+    "Episode six broke me. I was actively trying to predict it and still didn't see it coming.",
+    "The writing this season is operating on another level. Every scene is doing three things at once.",
+    "Casting is what gets me. Every single role feels lived-in. Nobody is just delivering lines.",
+    "The lead especially. That's a career-defining performance. Awards conversation is fully justified.",
+    "Soundtrack too — listened to the full score separately. Holds up completely on its own.",
+    "They scored it before filming certain scenes apparently. You can feel that in how it lands.",
+    "Ending split my friend group right down the middle. Half loved it, half felt genuinely cheated.",
+    "The ambiguity is the point. Art that everyone immediately agrees on probably isn't doing its job.",
   ],
   Science: [
-    "The methodology section is where most people miss all the important nuance.",
-    "Replication will be the real test here. Exciting result but let's not get ahead of ourselves.",
-    "If this holds up under scrutiny the implications for the field are massive.",
-    "I work in this area and this paper genuinely shifted how I think about the problem.",
-    "Sample size is small but the effect size is notable enough to pay attention to.",
-    "Classic case of science media overhyping a very preliminary finding. Happens every time.",
-    "Been waiting for a breakthrough in this specific area for years. Finally.",
-    "The potential applications in medicine alone could be transformative if this scales.",
-    "Peer review is going to be brutal on the methodology. Rightfully so.",
-    "Science is moving fast this year across every field. Hard to keep up.",
+    "The paper out of MIT this week is hard to overstate. If it replicates it shifts the standard model.",
+    "I read it. Methodology is solid but conditions are very specific. Real-world replication will be tough.",
+    "That's always the problem with breakthrough claims. Effect is real in the lab and vanishes at scale.",
+    "Not always. CRISPR faced the same criticism in 2019 and now it's entering clinical practice.",
+    "Fair. I'm probably too sceptical but I've been burned by headlines that outran the actual findings.",
+    "Science communication is broken. Media needs a result, papers need citations. Nobody wins.",
+    "The preprint culture doesn't help either. Incomplete work gets treated as settled science overnight.",
+    "Peer review is slow but it exists for a reason. The pace pressure is producing real sloppiness.",
+    "Still, the question they're investigating is the right one. Even a flawed paper moves the field.",
+    "Agreed. Progress is rarely linear. Sometimes a wrong paper asks exactly the right question.",
   ],
   Politics: [
-    "Policy details matter a hundred times more than the headlines. Always read past the lede.",
-    "Both sides are using this to score points while completely missing the actual human impact.",
-    "Young voter engagement is at a level I have not seen before. Something has genuinely shifted.",
-    "The economic angle is being almost entirely ignored in the mainstream coverage of this.",
-    "Local politics affects your daily life more than federal ever will. Worth paying attention.",
-    "Tired of the performative outrage cycle. What is the actual concrete plan being proposed?",
-    "Historical context is essential here and almost nobody in the discourse is providing it.",
-    "This decision is going to be relitigated and debated for decades regardless of outcome.",
-    "The real story is always buried in paragraph twelve. Media literacy is survival now.",
-    "Wherever you stand on this, the turnout numbers represent something meaningful.",
+    "The polling on this is all over the place. Hard to know what people think versus what they'll admit.",
+    "Polling has been broken since 2016. I don't trust any number without full methodology shown.",
+    "Even with methodology the shy voter problem is real. People don't always tell pollsters the truth.",
+    "Local races are moving very differently from national ones right now. The map is genuinely shifting.",
+    "Young voter registration is up significantly this cycle. That usually means something real is changing.",
+    "Registration doesn't equal turnout though. That gap has burned optimists before and will again.",
+    "True but the issues driving registration this time feel more immediate and personal than before.",
+    "Economic anxiety is the through-line regardless of which side you're on. That part isn't new.",
+    "The messaging still hasn't caught up with what people actually care about. Enormous disconnect.",
+    "It never does. By the time campaigns figure it out the election is already over.",
   ],
   Health: [
-    "Small consistent habits will beat intense bursts every single time. Compounding is real.",
-    "Sleep is always the most underrated variable in any health or performance conversation.",
-    "Tried this specific approach for three months. Noticed a real difference by week six.",
-    "Worked with a coach on exactly this last year. The accountability element is everything.",
-    "The research on this has genuinely reversed course in the last five years. Wild.",
-    "Mental and physical health are so deeply intertwined. You cannot optimize one while ignoring the other.",
-    "Recovery matters just as much as effort. Most people skip it and wonder why they plateau.",
-    "The app recommendations in this thread are actually solid. Already using two of them.",
-    "Quality over quantity here without question. Took me way too long to internalize that.",
-    "Everyone's baseline is different. What transforms one person's health might do nothing for yours.",
+    "Eight hours is the advice but quality matters far more than the number. I track both now.",
+    "Started taking sleep seriously two years ago. The difference in focus, mood and recovery is real.",
+    "The research backs this completely. Sleep debt compounds in ways most people don't realise.",
+    "What shifted it for me was treating it like training. You wouldn't skip gym recovery days.",
+    "The tracker apps are interesting. I've used three different ones and they each say something different.",
+    "The data is noisy but the habits they enforce are what matter. Consistent schedule beats everything.",
+    "Cutting screens an hour before bed changed more for me than any supplement or gadget I've tried.",
+    "Hard to sustain but the weeks I actually manage it are noticeably better in every single way.",
+    "Environment is underrated too. Temperature, darkness, sound. People skip basics and wonder why it fails.",
+    "It all comes back to the same thing. Sleep is the foundation everything else is built on top of.",
   ],
   Business: [
-    "The unit economics here do not add up long term. Burn rate like that is not sustainable.",
-    "Bootstrapped is deeply underrated. Not every business needs or benefits from VC capital.",
-    "Culture eats strategy for breakfast every time. I have seen it destroy great ideas firsthand.",
-    "This market is crowded but there is still clear room for a genuinely differentiated product.",
-    "Pitch was strong but the execution questions are the ones that actually matter at this stage.",
-    "Focus is the unlock almost every time. Every distraction kills compounding momentum.",
-    "Raising on story before traction is a brave move in this environment. Respect the conviction.",
-    "The freelance model scales very differently. It is a lifestyle business and that is completely valid.",
-    "Boring fundamentals still win in the end. Cash flow is king regardless of what era you are in.",
-    "Advisory boards are massively underutilized by most early stage founders. Big missed opportunity.",
+    "The fundraising environment has completely shifted. What got a seed round two years ago gets nothing now.",
+    "Probably healthy honestly. A lot of companies got funded on pure vibes and are quietly unwinding.",
+    "The bar going up isn't bad news for founders showing real traction. Less noise to compete through.",
+    "The bootstrapped path is deeply underrated right now. Keep the equity, the pressure sharpens you.",
+    "Margin requirements are different though. You can't lose money for five years when bootstrapped.",
+    "Which is a feature not a bug. Forces real discipline from day one instead of burning cash on growth.",
+    "Every company surviving this environment knows their unit economics cold. That's the common thread.",
+    "And their customers. Too many founders pitch beautifully but can't explain why customers churn.",
+    "Retention is everything. Acquisition is glamorous but retention is what the actual model is built on.",
+    "The fundamentals haven't changed. Everyone just forgot about them when capital was free.",
   ],
   Education: [
-    "The shift to project-based learning cannot come fast enough. Theory without application is hollow.",
-    "Good teachers are the single variable that matters most. Every dollar should go there first.",
-    "Online learning democratized access to knowledge. The credentialing side is just catching up.",
-    "Some semesters I spent more on textbooks than food. The system is genuinely broken.",
-    "The ROI conversation around degrees is more nuanced than most hot takes on either side.",
-    "Critical thinking over content consumption. That is the entire goal and we keep losing sight of it.",
-    "AI in the classroom is inevitable at this point. Better to prepare educators than resist the tide.",
-    "Class sizes remain the most consistently under-discussed problem in education policy.",
-    "Learned more from personal side projects than from any formal course I completed.",
-    "Access is still the core issue. Quality education remains a privilege far more than a right.",
+    "The AI in classrooms debate keeps missing the real question — what are we actually trying to teach?",
+    "Exactly. If the goal is people who can think, banning tools is completely the wrong fight.",
+    "The assessment model is what needs to change. Tests passable by AI aren't testing anything that matters.",
+    "Project-based assessment is the answer but it's expensive. Requires small classes and great teachers.",
+    "Good teachers are the single variable that actually moves outcomes. Everything else is secondary.",
+    "And they're chronically underpaid. We know what works and collectively choose not to fund it.",
+    "The access gap is what gets me. Quality education is still almost entirely determined by your postcode.",
+    "Online learning was supposed to fix that. Democratised access but credentialing hasn't followed.",
+    "Same knowledge from MIT OpenCourseWare versus a local college. Wildly different outcomes.",
+    "The signal problem. Until credentials reform, access reform only ever goes halfway.",
   ],
 };
 
-// Each seed user subscribes to these genres — creates overlap for graph recommendations
+// Every genre has at least 2 subscribers so threads look like real conversations
 const SEED_USERS = [
-  { username: "admin", email: "admin@example.com", password: "admin123", genres: ["Technology", "Science", "Business"] },
+  { username: "admin", email: "admin@example.com", password: "admin123", genres: ["Technology", "Science", "Business", "Entertainment"] },
   { username: "alice", email: "alice@example.com", password: "alice123", genres: ["Technology", "Sports", "Health"] },
-  { username: "bob",   email: "bob@example.com",   password: "bob123",   genres: ["Technology", "Entertainment", "Business"] },
-  { username: "carol", email: "carol@example.com", password: "carol123", genres: ["Sports", "Science", "Education"] },
-  { username: "dave",  email: "dave@example.com",  password: "dave123",  genres: ["Health", "Business", "Politics"] },
+  { username: "bob",   email: "bob@example.com",   password: "bob123",   genres: ["Technology", "Entertainment", "Business", "Politics"] },
+  { username: "carol", email: "carol@example.com", password: "carol123", genres: ["Sports", "Science", "Education", "Health"] },
+  { username: "dave",  email: "dave@example.com",  password: "dave123",  genres: ["Health", "Business", "Politics", "Education"] },
 ];
 
 async function clearNeo4j() {
@@ -203,13 +211,20 @@ async function seedData() {
         await graph.createTopic(topic._id);
         createdTopics.push(topic);
 
-        // Rotate through genre subscribers so each message has a different author
+        // Rotate through genre subscribers so each message has a different author.
+        // Spread timestamps over the past 30 days so the thread looks like a real conversation.
+        const now = Date.now();
+        const threadStart = now - 30 * 24 * 60 * 60 * 1000;
+        const interval = (now - threadStart) / (messages.length - 1 || 1);
+
         for (let i = 0; i < messages.length; i++) {
           const author = authors[i % authors.length];
+          const createdAt = new Date(threadStart + interval * i + Math.floor(Math.random() * 3_600_000));
           const msg = await Message.create({
             topicId: topic._id,
             authorId: author._id,
             body: messages[i],
+            createdAt,
           });
           await graph.recordPost(author._id, topic._id, msg._id);
         }

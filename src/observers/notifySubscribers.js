@@ -13,7 +13,8 @@ eventBus.subscribe("newMessage", async (message) => {
     const subs = await Subscription.find({ topicId: message.topicId });
 
     for (const sub of subs) {
-      if (sub.userId.toString() === message.authorId.toString()) continue; // skip author
+      const authorId = message.authorId._id ?? message.authorId;
+      if (sub.userId.toString() === authorId.toString()) continue; // skip author
       const user = await User.findById(sub.userId);
       if (!user) continue;
 
