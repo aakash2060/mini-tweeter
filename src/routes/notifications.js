@@ -1,10 +1,22 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 const hub = require("../notificationHub");
 
-/*  GET /notifications/events  – SSE stream for logged-in users  */
+// EventSource (browser) can't set Authorization headers, so JWT is accepted
+// via query param (?token=) as a fallback in addition to the Bearer header.
 router.get("/events", (req, res) => {
-  if (!req.session || !req.session.userId) return res.sendStatus(401);
+  const raw =
+    req.query.token ||
+    (req.headers.authorization || "").replace(/^Bearer\s+/, "");
+
+  if (!raw) return res.sendStatus(401);
+
+  let userId;
+  try {
+    userId = jwt.verify(raw, process.env.JWT_SECRET).userId;
+  } catch {
+    return res.sendStatus(401);
+  }
 
   res.set({
     "Content-Type": "text/event-stream",
@@ -12,12 +24,10 @@ router.get("/events", (req, res) => {
     Connection: "keep-alive",
   });
   res.flushHeaders();
-  res.write("retry: 3000\n\n"); // let client know to retry in 3 s
+  res.write("retry: 3000\n\n");
 
-  /* register this connection for the current user */
-  hub.addClient(req.session.userId.toString(), res);
+  hub.addClient(userId.toString(), res);
 
-  /* ping every 25 s to keep the connection warm */
   const ping = setInterval(() => res.write(":\n\n"), 25_000);
   res.on("close", () => clearInterval(ping));
 });
