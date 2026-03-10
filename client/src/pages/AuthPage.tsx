@@ -107,6 +107,18 @@ export const AuthPage = () => {
           </form>
         </div>
 
+        {/* Demo credentials */}
+        {mode === 'login' && (
+          <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3">
+            <p className="mb-2 text-xs font-medium text-zinc-500">Demo accounts</p>
+            <div className="space-y-1 text-xs text-zinc-400">
+              <p>admin@example.com · <span className="text-zinc-500">admin123</span></p>
+              <p>alice@example.com · <span className="text-zinc-500">alice123</span></p>
+              <p>bob@example.com · <span className="text-zinc-500">bob123</span></p>
+            </div>
+          </div>
+        )}
+
         {/* Toggle */}
         <p className="mt-5 text-center text-sm text-zinc-500">
           {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}

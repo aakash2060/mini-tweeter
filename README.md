@@ -1,50 +1,87 @@
-# Mini‑Tweeter &nbsp;–&nbsp;
+# Mini-Tweeter
 
-## ✅ / ⬜ Task Checklist (T1 – T8)
+A full-stack MERN social platform with a dual-database architecture — MongoDB Atlas for document storage and Neo4j AuraDB for graph-based recommendations.
 
-| ID       | Requirement                                                                                                               | Status                                    |
-| -------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **T1**   | System maintains **topics** (message threads).                                                                            | ✅ _Done_                                 |
-| **T2.1** | On login, show the **two newest messages** in every subscribed topic.                                                     | ✅ _Done_                                |
-| **T2.2** | Login page also offers a **topic directory** (subscribe) and an **unsubscribe** button next to each current subscription. | ✅ _Done_                                 |
-| **T3**   | User can **create a new topic** (auto‑subscribed).                                                                        | ✅ _Done_                                 |
-| **T4**   | User can **post a message** in any topic they’re subscribed to.                                                           | ✅ _Done_                                 |
-| **T5**   | Follows the **MVC pattern**.                                                                                              | ✅ _Done_ (`models/ views/ controllers/`) |
-| **T6**   | Implements the **Observer pattern** (e.g., event bus for new messages, stats, notifications).                             | ✅ _Done_                                 |
-| **T7**   | Uses the **Singleton pattern** for DB access.                                                                             | ✅ _Done_ (`src/config/db.js`)            |
-| **T8**   | Tracks & reports **topic access statistics**.                                                                             | ✅ _Done_                                 |
+**Live Demo:** https://mini-tweeter-chi.vercel.app
+**Backend API:** https://mini-tweeter-production.up.railway.app
 
 ---
 
-## 🗂️ Where to Finish Each Task
+## Tech Stack
 
-| Task ID(s)     | Key files / folders to edit                                                                          |
-| -------------- | ---------------------------------------------------------------------------------------------------- |
-| **T1, T3**     | `src/models/topic.js` · `src/controllers/topicController.js` · `src/routes/topic.js`                 |
-| **T2.1, T2.2** | `src/controllers/dashboardController.js` _(create)_ · `src/views/dashboard.ejs`                      |
-| **T4**         | `src/models/message.js` · `src/controllers/messageController.js` · `src/routes/message.js`           |
-| **T6**         | `src/observers/eventBus.js` · add subscriber modules (`notifySubscribers.js`, `topicStats.js`, etc.) |
-| **T8**         | `src/models/stats.js` (optional) · observer that increments stats · expose an endpoint / view        |
-
-_(T5 & T7 are fully implemented; no work required.)_
+| Layer | Technology |
+|---|---|
+| Frontend | React + TypeScript, Vite, Tailwind CSS |
+| Backend | Node.js, Express 5 |
+| Primary DB | MongoDB Atlas (Mongoose) |
+| Graph DB | Neo4j AuraDB (Cypher) |
+| Auth | JWT (jsonwebtoken + bcryptjs) |
+| Real-time | Server-Sent Events (SSE) |
+| Deployment | Railway (backend) + Vercel (frontend) |
 
 ---
 
-## ▶️ Run Locally
+## Why Two Databases?
 
-```bash
-# 1 – install dependencies
-npm install
+MongoDB handles all document storage — users, topics, messages, subscriptions. Neo4j handles the social graph. Relationship traversal queries like *"find topics followed by users who share my subscriptions"* are graph problems — they require multi-hop traversal that would be slow and complex in MongoDB but are a single Cypher query in Neo4j.
 
-# 2 – start the dev server
-node src/app.js
+```cypher
+MATCH (me:User)-[:SUBSCRIBED_TO]->(shared:Topic)<-[:SUBSCRIBED_TO]-(similar:User)
+WITH me, similar
+MATCH (similar)-[:SUBSCRIBED_TO]->(rec:Topic)
+WHERE NOT (me)-[:SUBSCRIBED_TO]->(rec)
+RETURN rec.id, count(*) AS score ORDER BY score DESC
 ```
 
-- App opens on **http://localhost:3000**
-- Sign‑up page: **/signup**  
-  Log‑in page: **/login**
+---
 
-> **Prerequisites:**
->
-> - Node.js ≥ 18
-> - Internet connection (to reach the MongoDB Atlas cluster configured in `src/config/db.js`)
+## Architecture
+
+- **MVC** — `src/models/`, `src/controllers/`, `src/routes/`
+- **Observer Pattern** — `src/eventbus.js` decouples message posting from stat tracking and notifications
+- **Singleton Pattern** — `src/config/db.js` and `src/config/neo4j.js` maintain single DB instances
+- **SSE Notifications** — `src/notificationHub.js` pushes real-time events to subscribed users
+
+---
+
+## Features
+
+- JWT authentication with genre-based onboarding on first login
+- Topic communities — create, browse, subscribe/unsubscribe
+- Paginated message threads (10 per page)
+- Real-time notifications via SSE when new messages are posted
+- Neo4j-powered topic recommendations and mutual subscriber discovery
+- Platform statistics — most active topics and users
+
+---
+
+## Local Setup
+
+**Backend:**
+```bash
+npm install
+# create .env with MONGO_URI, JWT_SECRET, NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE, CLIENT_URL
+npm run dev        # http://localhost:3000
+npm run seed       # seed sample data
+```
+
+**Frontend:**
+```bash
+cd client
+npm install
+npm run dev        # http://localhost:5173
+```
+
+---
+
+## Demo Accounts
+
+After running `npm run seed`:
+
+| Email | Password |
+|---|---|
+| admin@example.com | admin123 |
+| alice@example.com | alice123 |
+| bob@example.com | bob123 |
+| carol@example.com | carol123 |
+| dave@example.com | dave123 |
