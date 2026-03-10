@@ -6,6 +6,10 @@
 
 a { text-decoration: none; }
 
+html {
+  background: #09090b;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   background: #09090b;

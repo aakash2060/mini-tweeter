@@ -16,7 +16,7 @@ function AppShell() {
   const { pathname } = useLocation();
   return (
     <>
-      {pathname !== '/' && <Navbar />}
+      {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<AuthPage />} />
