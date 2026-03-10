@@ -45,7 +45,7 @@ export const DashboardPage = () => {
   );
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-6 py-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
 
         {/* Header */}
@@ -98,10 +98,12 @@ export const DashboardPage = () => {
                   ) : (
                     <div className="space-y-2">
                       {messages.map(msg => (
-                        <div key={msg._id} className="flex items-baseline gap-3 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5">
-                          <span className="shrink-0 text-xs font-semibold text-indigo-400">@{msg.authorId.username}</span>
-                          <span className="flex-1 truncate text-sm text-zinc-300">{msg.body}</span>
-                          <span className="shrink-0 text-xs text-zinc-600">{new Date(msg.createdAt).toLocaleDateString()}</span>
+                        <div key={msg._id} className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5">
+                          <div className="flex items-center justify-between gap-2 mb-0.5">
+                            <span className="text-xs font-semibold text-indigo-400">@{msg.authorId.username}</span>
+                            <span className="text-xs text-zinc-600">{new Date(msg.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <p className="text-sm text-zinc-300 line-clamp-2">{msg.body}</p>
                         </div>
                       ))}
                     </div>

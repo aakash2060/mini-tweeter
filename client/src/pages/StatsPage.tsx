@@ -28,7 +28,7 @@ export const StatsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-6 py-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
 
         <div className="mb-10">
@@ -44,8 +44,8 @@ export const StatsPage = () => {
               <TrendingUp size={16} className="text-indigo-400" />
               <h2 className="text-base font-semibold text-zinc-200">Most Active Topics</h2>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden overflow-x-auto">
+              <table className="w-full min-w-[360px] text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-900/80">
                     <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">#</th>
@@ -79,8 +79,8 @@ export const StatsPage = () => {
               <Users size={16} className="text-indigo-400" />
               <h2 className="text-base font-semibold text-zinc-200">Most Active Users</h2>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden overflow-x-auto">
+              <table className="w-full min-w-[360px] text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-900/80">
                     <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">#</th>

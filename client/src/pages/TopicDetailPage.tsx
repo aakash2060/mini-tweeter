@@ -72,12 +72,12 @@ export const TopicDetailPage = () => {
   );
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-6 py-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-3xl">
 
         {/* Topic header */}
         <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
-          <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div className="flex-1">
               <span className="inline-flex items-center rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-0.5 text-xs font-medium text-indigo-400">
                 {topic.genre}
@@ -86,7 +86,7 @@ export const TopicDetailPage = () => {
             </div>
             <button
               onClick={handleSubscribe}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              className={`self-start sm:shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 topic.isSubscribed
                   ? 'bg-zinc-200 text-zinc-900 hover:bg-white active:bg-zinc-300'
                   : 'bg-indigo-600 text-white hover:bg-indigo-500 active:bg-indigo-700'
