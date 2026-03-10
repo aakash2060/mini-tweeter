@@ -1,175 +1,74 @@
 const Topic = require("../models/topic");
 const Message = require("../models/message");
 const Subscription = require("../models/subscription");
-const eventBus = require("../eventbus"); // ★ added
+const eventBus = require("../eventbus");
 
-/* ========== new-topic form ========== */
-exports.getNewTopicForm = async (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-
+exports.getAllTopics = async (req, res) => {
   try {
-    const user = await require("../models/user").findById(req.session.userId);
-    res.render("new-topic", { user, title: "Create New Topic" });
+    const topics = await Topic.find().sort({ createdAt: -1 });
+    const subs = await Subscription.find({ userId: req.userId });
+    const subIds = new Set(subs.map((s) => s.topicId.toString()));
+    res.json(topics.map((t) => ({ ...t.toObject(), isSubscribed: subIds.has(t._id.toString()) })));
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: err.message });
   }
 };
 
-/* ========== create new topic ========== */
 exports.createTopic = async (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-
   try {
     const { title, description, genre } = req.body;
-    const newTopic = new Topic({
-      title,
-      description,
-      genre,
-      creatorId: req.session.userId,
-      createdAt: new Date(),
-    });
-    const savedTopic = await newTopic.save();
-
-    /* auto-subscribe creator */
-    await new Subscription({
-      userId: req.session.userId,
-      topicId: savedTopic._id,
-      createdAt: new Date(),
-    }).save();
-
-    res.redirect("/dashboard");
+    const topic = await Topic.create({ title, description, genre, creatorId: req.userId });
+    await Subscription.create({ userId: req.userId, topicId: topic._id });
+    res.status(201).json(topic);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error: " + err.message);
+    res.status(500).json({ error: err.message });
   }
 };
 
-/* ========== topic detail ========== */
 exports.getTopicById = async (req, res) => {
   try {
-    const topicId = req.params.id;
-    const topic = await Topic.findById(topicId);
-    if (!topic) return res.status(404).send("Topic not found");
+    const topic = await Topic.findById(req.params.id);
+    if (!topic) return res.status(404).json({ error: "Topic not found" });
 
-    /* stats: record view + emit event */
-    await Topic.findByIdAndUpdate(topicId, { $inc: { viewCount: 1 } });
-    eventBus.emit("topicViewed", topicId);
+    // BUG-01 fix: observer is the sole viewCount incrementer — no direct write here
+    eventBus.emit("topicViewed", topic._id.toString());
 
-    const messages = await Message.find({ topicId })
-      .populate("authorId", "username")
-      .sort({ createdAt: -1 });
-
-    /* check subscription */
-    let isSubscribed = false;
-    if (req.session.userId) {
-      isSubscribed = !!(await Subscription.findOne({
-        userId: req.session.userId,
-        topicId,
-      }));
-    }
-
-    const user = req.session.userId
-      ? await require("../models/user").findById(req.session.userId)
-      : null;
-
-    res.render("topic-detail", {
-      topic,
-      description: topic.description,
-      messages,
-      user,
-      isSubscribed,
-      title: topic.title,
-    });
+    const isSubscribed = !!(await Subscription.findOne({
+      userId: req.userId,
+      topicId: topic._id,
+    }));
+    res.json({ ...topic.toObject(), isSubscribed });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: err.message });
   }
 };
 
-/* ========== (un)subscribe ========== */
 exports.subscribe = async (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-
   try {
-    const topicId = req.params.id;
-    const existing = await Subscription.findOne({
-      userId: req.session.userId,
-      topicId,
-    });
-
+    const existing = await Subscription.findOne({ userId: req.userId, topicId: req.params.id });
     if (!existing) {
-      await new Subscription({
-        userId: req.session.userId,
-        topicId,
-        createdAt: new Date(),
-      }).save();
+      await Subscription.create({ userId: req.userId, topicId: req.params.id });
     }
-    res.redirect(req.query.returnTo || "/dashboard");
+    res.json({ subscribed: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: err.message });
   }
 };
 
 exports.unsubscribe = async (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-
   try {
-    await Subscription.findOneAndDelete({
-      userId: req.session.userId,
-      topicId: req.params.id,
-    });
-    res.redirect(req.query.returnTo || "/dashboard");
+    await Subscription.findOneAndDelete({ userId: req.userId, topicId: req.params.id });
+    res.json({ subscribed: false });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: err.message });
   }
 };
 
-/* ========== subscription management page ========== */
-exports.getSubscriptionManagement = async (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-
+exports.getSubscriptions = async (req, res) => {
   try {
-    const allTopics = await Topic.find().sort({ createdAt: -1 });
-
-    /* ensure replyCount exists for seeded/older topics */
-    for (const t of allTopics) {
-      if (t.replyCount == null) {
-        const rc = await Message.countDocuments({ topicId: t._id });
-        await Topic.findByIdAndUpdate(t._id, { replyCount: rc });
-        t.replyCount = rc;
-      }
-    }
-
-    const subs = await Subscription.find({ userId: req.session.userId });
-    const subIds = subs.map((s) => s.topicId.toString());
-
-    const subscribedTopics = [];
-    const availableTopics = [];
-
-    for (const t of allTopics) {
-      (subIds.includes(t._id.toString())
-        ? subscribedTopics
-        : availableTopics
-      ).push(t);
-    }
-
-    const user = await require("../models/user").findById(req.session.userId);
-
-    res.render("subscription-management", {
-      user,
-      subscribedTopics,
-      availableTopics,
-      title: "Manage Subscriptions",
-    });
+    const subs = await Subscription.find({ userId: req.userId }).populate("topicId");
+    res.json(subs.map((s) => s.topicId));
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: err.message });
   }
 };
-
-/* ---------- placeholder for any misc routes ---------- */
-exports.placeholder = (req, res) =>
-  res.status(501).send("Topic endpoint not implemented yet: " + req.path);
