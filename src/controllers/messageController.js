@@ -1,62 +1,41 @@
-const Message = require('../models/message');
-const Topic = require('../models/topic');
-const User = require('../models/user');
-const Subscription = require('../models/subscription');
-const eventBus = require('../eventbus'); 
+const Message = require("../models/message");
+const Subscription = require("../models/subscription");
+const eventBus = require("../eventbus");
 
-// Create a new message
-exports.createMessage = async (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
-  
+exports.getMessagesByTopic = async (req, res) => {
   try {
-    const { topicId, body } = req.body;
-    
-    // Check if user is subscribed to this topic
-    const subscription = await Subscription.findOne({
-      userId: req.session.userId,
-      topicId
-    });
-    
-    if (!subscription) {
-      // User is not subscribed, redirect with error
-      return res.status(403).send('You must be subscribed to this topic to post messages');
-    }
-    
-    // Create new message
-    const newMessage = new Message({
-      body,
-      topicId,
-      authorId: req.session.userId,
-      createdAt: new Date()
-    });
-    
-    await newMessage.save();  // Save the message to the database
-    
-    // Emit the 'newMessage' event after saving the new message
-    eventBus.emit('newMessage', newMessage);  // Emit the new message object
+    const topicId = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-    // Redirect back to the topic
-    res.redirect(`/topic/${topicId}`);
+    const [messages, total] = await Promise.all([
+      Message.find({ topicId })
+        .populate("authorId", "username")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Message.countDocuments({ topicId }),
+    ]);
+
+    res.json({ messages, page, totalPages: Math.ceil(total / limit), total });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Get messages for a specific topic
-exports.getMessagesByTopic = async (req, res) => {
+exports.createMessage = async (req, res) => {
   try {
-    const topicId = req.params.topicId;
-    
-    const messages = await Message.find({ topicId })
-      .populate('authorId', 'username')
-      .sort({ createdAt: -1 });
-    
-    res.json(messages);
+    const topicId = req.params.id;
+    const subscription = await Subscription.findOne({ userId: req.userId, topicId });
+    if (!subscription) {
+      return res.status(403).json({ error: "Must be subscribed to post in this topic" });
+    }
+    const message = await Message.create({ body: req.body.body, topicId, authorId: req.userId });
+    await message.populate("authorId", "username");
+    eventBus.emit("newMessage", message);
+    res.status(201).json(message);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    res.status(500).json({ error: err.message });
   }
 };
