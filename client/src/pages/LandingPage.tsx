@@ -114,7 +114,7 @@ export const LandingPage = () => {
           {/* eyebrow badge */}
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-zinc-900/80 px-4 py-1.5 text-sm text-zinc-400">
             <Sparkles size={13} className="text-indigo-400" />
-            Powered by MongoDB + Neo4j dual-database
+            Powered by your involvement and passion for real conversations
           </div>
 
           <h1 className="mb-6 text-[clamp(2.6rem,6vw,5rem)] font-extrabold leading-[1.05] tracking-tight">
