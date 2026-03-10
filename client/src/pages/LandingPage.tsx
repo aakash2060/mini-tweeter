@@ -22,7 +22,7 @@ const features = [
   },
   {
     icon: GitBranch,
-    title: 'Graph Recommendations',
+    title: 'Smart Discovery',
     description: 'Neo4j traverses your subscription graph to surface topics loved by people who share your exact interests.',
     spot: 'from-emerald-500/20 to-teal-500/20',
     color: 'text-emerald-400',
@@ -84,12 +84,12 @@ export const LandingPage = () => {
 
       {/* ── NAV ──────────────────────────────────────────────────── */}
       <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
+        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <span className="text-lg font-bold text-indigo-400 tracking-tight">Mini-Tweeter</span>
           <div className="flex items-center gap-2">
             <Link
               to="/login"
-              className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-100 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
             >
               Sign in
             </Link>
@@ -104,7 +104,7 @@ export const LandingPage = () => {
       </header>
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-16 pb-24 text-center">
+      <section className="relative flex min-h-screen flex-col items-center justify-center px-4 pt-16 pb-16 text-center sm:px-6 sm:pb-24">
         {/* gradient orbs */}
         <div className="pointer-events-none absolute left-1/4 top-1/3 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-600/20 blur-3xl" />
         <div className="pointer-events-none absolute right-1/4 bottom-1/4 h-72 w-72 rounded-full bg-violet-600/15 blur-3xl" />
@@ -160,7 +160,7 @@ export const LandingPage = () => {
       </div>
 
       {/* ── FEATURES ─────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-6 py-28">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-28">
         <div className="mb-16 text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400">Features</p>
           <h2 className="text-3xl font-bold sm:text-4xl">Everything your community needs</h2>
@@ -192,7 +192,7 @@ export const LandingPage = () => {
 
       {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
       <section className="border-t border-zinc-800/60 bg-zinc-900/30">
-        <div className="mx-auto max-w-4xl px-6 py-28">
+        <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-28">
           <div className="mb-16 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400">Getting started</p>
             <h2 className="text-3xl font-bold sm:text-4xl">Up and running in 60 seconds</h2>
@@ -210,8 +210,8 @@ export const LandingPage = () => {
       </section>
 
       {/* ── FINAL CTA ────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-6 py-28">
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-950 via-zinc-900 to-zinc-950 px-8 py-20 text-center">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-28">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-950 via-zinc-900 to-zinc-950 px-6 py-16 text-center sm:px-8 sm:py-20">
           {/* top edge highlight */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
           <div className="pointer-events-none absolute left-1/2 top-0 h-48 w-80 -translate-x-1/2 rounded-full bg-indigo-500/20 blur-3xl" />
@@ -232,7 +232,7 @@ export const LandingPage = () => {
 
       {/* ── FOOTER ───────────────────────────────────────────────── */}
       <footer className="border-t border-zinc-800/60 bg-zinc-900/30">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-8 sm:flex-row sm:px-6">
           <span className="text-base font-bold text-indigo-400">Mini-Tweeter</span>
           <p className="text-sm text-zinc-500">Built with React, Express, MongoDB & Neo4j.</p>
         </div>

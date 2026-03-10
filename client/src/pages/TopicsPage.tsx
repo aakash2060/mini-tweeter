@@ -46,7 +46,7 @@ export const TopicsPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-6 py-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
 
         {/* Header */}
@@ -59,7 +59,7 @@ export const TopicsPage = () => {
             onClick={() => setShowForm(!showForm)}
             className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
               showForm
-                ? 'border border-zinc-700 text-zinc-400 hover:text-white'
+                ? 'border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white'
                 : 'bg-indigo-600 text-white hover:bg-indigo-500'
             }`}
           >
@@ -69,7 +69,7 @@ export const TopicsPage = () => {
 
         {/* Create form */}
         {showForm && (
-          <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
+          <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 max-w-xl">
             <h2 className="mb-5 text-base font-semibold text-zinc-100">Create a new topic</h2>
             <form onSubmit={handleCreate} className="space-y-3">
               <input

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getRecommendations, getMutualSubscribers, subscribeTopic } from '../services/api';
-import { GitBranch, Users, Sparkles } from 'lucide-react';
+import { Compass, Users, Sparkles } from 'lucide-react';
 
 interface Topic {
   _id: string;
@@ -31,16 +31,16 @@ export const RecommendationsPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-6 py-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
 
         <div className="mb-10">
           <div className="mb-2 flex items-center gap-2">
-            <GitBranch size={18} className="text-indigo-400" />
-            <h1 className="text-2xl font-bold text-zinc-100">Graph Recommendations</h1>
+            <Compass size={18} className="text-indigo-400" />
+            <h1 className="text-2xl font-bold text-zinc-100">Discover</h1>
           </div>
           <p className="text-sm text-zinc-500">
-            Powered by Neo4j — based on what users with overlapping subscriptions follow.
+            Topics and people you might like — based on what users with overlapping subscriptions follow.
           </p>
         </div>
 
