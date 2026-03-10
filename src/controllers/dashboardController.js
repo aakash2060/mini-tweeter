@@ -12,7 +12,7 @@ exports.getDashboard = async (req, res) => {
       UserPreference.findOne({ userId }),
       Subscription.find({ userId }),
     ]);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(401).json({ error: "User not found" });
 
     const subscribedTopicIds = subscriptions.map((s) => s.topicId);
 
