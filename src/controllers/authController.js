@@ -1,47 +1,37 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const UserPreference = require("../models/userpreference"); 
+const UserPreference = require("../models/userpreference");
 
-exports.getSignup = (_, res) => res.render("signup");
-exports.getLogin = (_, res) => res.render("login");
+const signToken = (userId) =>
+  jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-exports.postSignup = async (req, res) => {
+exports.register = async (req, res) => {
   try {
-    const newUser = await User.create(req.body);
-
-   // Create user preferences record with firstLogin flag
-   await UserPreference.create({
-    userId: newUser._id,
-    genres: [],
-    firstLogin: true
-  });
-
-    res.redirect("/login");
-
+    const { username, email, password } = req.body;
+    const user = await User.create({ username, email, password });
+    await UserPreference.create({ userId: user._id, genres: [], firstLogin: true });
+    const token = signToken(user._id);
+    res.status(201).json({ token, userId: user._id, username: user.username });
   } catch (e) {
-    res.status(400).send("Signup error: " + e.message);
+    res.status(400).json({ error: e.message });
   }
 };
 
-exports.postLogin = async (req, res) => {
+exports.login = async (req, res) => {
   try {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  const ok = user && (await user.comparePassword(password));
-  if (!ok) return res.status(401).send("Bad credentials");
-  req.session.userId = user._id;
-// Check if this is the user's first login
-const userPrefs = await UserPreference.findOne({ userId: user._id });
-    
-if (userPrefs && userPrefs.firstLogin) {
-  res.redirect("/genre-selection");
-} else {
-  res.redirect("/dashboard");
-}
-} catch (error) {
-res.status(500).send("Login error: " + error.message);
-}
-};
-
-exports.logout = (req, res) => {
-  req.session.destroy(() => res.redirect("/login"));
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    const ok = user && (await user.comparePassword(password));
+    if (!ok) return res.status(401).json({ error: "Invalid email or password" });
+    const prefs = await UserPreference.findOne({ userId: user._id });
+    const token = signToken(user._id);
+    res.json({
+      token,
+      userId: user._id,
+      username: user.username,
+      firstLogin: prefs ? prefs.firstLogin : false,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 };
